@@ -27,11 +27,12 @@ if (! function_exists('toBits')) {
 if (! function_exists('percentChange')) {
     function percentChange(float $dividend, float $divisor, int $precision = 0): string
     {
-        if ($dividend === 0 || $divisor === 0) {
-            return 0;
-        }
 
-        $quotient = ($dividend - $divisor) / $divisor;
+        try {
+            $quotient = ($dividend - $divisor) / $divisor;
+        } catch (DivisionByZeroError $e) {
+            $quotient = 0;
+        }
 
         return number_format(round($quotient * 100, $precision), $precision);
     }
@@ -73,7 +74,7 @@ if (! function_exists('json_validate')) {
     {
         if (! empty($data)) {
             return is_string($data) &&
-              is_array(json_decode($data, true)) ? true : false;
+                is_array(json_decode($data, true)) ? true : false;
         }
 
         return false;
